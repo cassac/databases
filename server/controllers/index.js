@@ -8,7 +8,12 @@ module.exports = {
           res.send(results);
         });
     }, // a function which handles a get request for all messages
-    post: function (req, res) {} // a function which handles posting a message to the database
+    post: function (req, res) {
+      models.messages.post(req.body).then(function(results) {
+        console.log('results', results);
+      });
+      res.send('ok');
+    } // a function which handles posting a message to the database
   },
 
   users: {
