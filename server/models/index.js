@@ -15,8 +15,7 @@ module.exports = {
     }, // a function which produces all the messages
     post: function (message) {
       return new Promise(function(resolve, reject) {
-        // var obj = {text: 'my message', room_id: 1, user_id: 1};
-        db.query('INSERT INTO messages (text, room_id, user_id) VALUES ("message here", 1, 1)', function(err, result) {
+        db.query('INSERT INTO messages (text, room_id, user_id) VALUES ("' + message.text + '", ' + message.room_id +', ' + message.user_id+ ')', function(err, result) {
           if (err) {
             return reject(err);
           }
@@ -25,7 +24,7 @@ module.exports = {
       });
     } // a function which can be used to insert a message into the database
   },
-  
+
   users: {
     get: function () {
       return new Promise(function(resolve, reject) {
