@@ -33,7 +33,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` INTEGER(3) NOT NULL AUTO_INCREMENT,
   `name` CHAR(30) NOT NULL,
-  `hobby` CHAR(30) NOT NULL,
+  `hobby` CHAR(30) NULL,
   PRIMARY KEY (`id`)
 );
 
