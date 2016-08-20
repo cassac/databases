@@ -25,10 +25,15 @@ var app = {
 
     // Fetch previous messages
     app.startSpinner();
-    app.fetch(false);
+    app.fetch(false, 'messages/', app.handleMessages);
 
+    // Fetch rooms
+    // app.fetchRooms();
+
+    // Fetch users
+    // app.fetchUsers
     // Poll for new messages
-    setInterval(app.fetch, 1000);
+    setInterval(app.fetch, 2000);
   },
 
   send: function(data, urlEndPoint) {
@@ -52,36 +57,44 @@ var app = {
     });
   },
 
-  fetch: function(animate) {
+  fetch: function(animate, urlEndPoint, callback) {
     $.ajax({
-      url: app.server + 'messages/',
+      url: app.server + urlEndPoint,
       type: 'GET',
       contentType: 'application/json',
       // data: { order: '-createdAt'},
       success: function(data) {
         // Don't bother if we have nothing to work with
         if (!data.results || !data.results.length) { return; }
-
-        // Get the last message
-        var mostRecentMessage = data.results[data.results.length - 1];
-        var displayedRoom = $('.chat span').first().data('roomname');
+        callback(data);
         app.stopSpinner();
-        // Only bother updating the DOM if we have a new message
-        if (mostRecentMessage.objectId !== app.lastMessageId || app.roomname !== displayedRoom) {
-          // Update the UI with the fetched rooms
-          app.populateRooms(data.results);
-
-          // Update the UI with the fetched messages
-          app.populateMessages(data.results, animate);
-
-          // Store the ID of the most recent message
-          app.lastMessageId = mostRecentMessage.id;
-        }
       },
       error: function(data) {
         console.error('chatterbox: Failed to fetch messages');
       }
     });
+  },
+
+  handleMessages: function(data, animate) {
+    var mostRecentMessage = data.results[data.results.length - 1];
+
+    // Only bother updating the DOM if we have a new message
+    if (mostRecentMessage.id !== app.lastMessageId) {
+      var displayedRoom = $('.chat span').first().data('roomname');
+
+      // Update the UI with the fetched messages
+      app.populateMessages(data.results, animate);
+
+      // Store the ID of the most recent message
+      app.lastMessageId = mostRecentMessage.id;
+    }
+  },
+
+  handleRooms: function(data) {
+    // Only bother updating the DOM if we have a new message
+    var displayedRoom = $('.chat span').first().data('roomname');
+    // Update the UI with the fetched rooms
+    app.populateRooms(data.results);
   },
 
   clearMessages: function() {
@@ -139,6 +152,7 @@ var app = {
   },
 
   addMessage: function(data) {
+    console.log(data);
     if (!data.roomname) {
       data.roomname = 'lobby';
     }
