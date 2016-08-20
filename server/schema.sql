@@ -1,4 +1,4 @@
--- DROP DATABASE chat;
+DROP DATABASE chat;
 
 CREATE DATABASE chat;
 
@@ -19,10 +19,9 @@ USE chat;
 DROP TABLE IF EXISTS `rooms`;
     
 CREATE TABLE `rooms` (
-  `id` INTEGER(3) NOT NULL AUTO_INCREMENT,
-  `roomname` CHAR(30) NOT NULL,
+  `roomname` CHAR(30) NOT NULL UNIQUE,
   `description` CHAR(150) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`roomname`)
 ) COMMENT 'only organic';
 
 -- ---
@@ -33,10 +32,9 @@ CREATE TABLE `rooms` (
 DROP TABLE IF EXISTS `users`;
     
 CREATE TABLE `users` (
-  `id` INTEGER(3) NOT NULL AUTO_INCREMENT,
-  `username` CHAR(30) NOT NULL,
+  `username` CHAR(30) NOT NULL UNIQUE, 
   `hobby` CHAR(30) NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`username`)
 );
 
 -- ---
@@ -50,8 +48,8 @@ CREATE TABLE `messages` (
   `id` INTEGER NOT NULL AUTO_INCREMENT,
   `text` CHAR(150) NOT NULL,
   `created` TIMESTAMP NOT NULL,
-  `room_id` INTEGER(3) NOT NULL,
-  `user_id` INTEGER(3) NOT NULL,
+  `roomname` CHAR(30) NOT NULL,
+  `username` CHAR(30) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -63,18 +61,18 @@ CREATE TABLE `messages` (
 DROP TABLE IF EXISTS `followers`;
     
 CREATE TABLE `followers` (
-  `followee_id` INTEGER(3) NOT NULL,
-  `follower_id` INTEGER(3) NOT NULL
+  `followee_username` CHAR(30) NOT NULL,
+  `follower_username` CHAR(30) NOT NULL
 );
 
 -- ---
 -- Foreign Keys 
 -- ---
 
-ALTER TABLE `messages` ADD FOREIGN KEY (room_id) REFERENCES `rooms` (`id`);
-ALTER TABLE `messages` ADD FOREIGN KEY (user_id) REFERENCES `users` (`id`);
-ALTER TABLE `followers` ADD FOREIGN KEY (followee_id) REFERENCES `users` (`id`);
-ALTER TABLE `followers` ADD FOREIGN KEY (follower_id) REFERENCES `users` (`id`);
+ALTER TABLE `messages` ADD FOREIGN KEY (roomname) REFERENCES `rooms` (`roomname`);
+ALTER TABLE `messages` ADD FOREIGN KEY (username) REFERENCES `users` (`username`);
+ALTER TABLE `followers` ADD FOREIGN KEY (followee_username) REFERENCES `users` (`username`);
+ALTER TABLE `followers` ADD FOREIGN KEY (follower_username) REFERENCES `users` (`username`);
 
 -- ---
 -- Table Properties

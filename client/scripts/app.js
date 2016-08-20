@@ -33,7 +33,9 @@ var app = {
     // Fetch users
     // app.fetchUsers
     // Poll for new messages
-    setInterval(app.fetch, 2000);
+    setInterval(function() {
+      app.fetch(false, 'messages/', app.handleMessages);
+    }, 1000);
   },
 
   send: function(data, urlEndPoint) {
@@ -49,7 +51,7 @@ var app = {
       contentType: 'application/json',
       success: function (data) {
         // Trigger a fetch to update the messages, pass true to animate
-        app.fetch();
+        // app.fetch();
       },
       error: function (data) {
         console.error('chatterbox: Failed to send message', data);

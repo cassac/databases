@@ -14,8 +14,9 @@ module.exports = {
       });
     }, // a function which produces all the messages
     post: function (message) {
+      console.log(message);
       return new Promise(function(resolve, reject) {
-        db.query('INSERT INTO messages (text, room_id, user_id) VALUES ("' + message.text + '", ' + message.room_id +', ' + message.user_id+ ')', function(err, result) {
+        db.query('INSERT INTO messages (text, roomname, username) VALUES ("' + message.text + '", "' + message.roomname + '", "' + message.username + '")', function(err, result) {
           if (err) {
             return reject(err);
           }
