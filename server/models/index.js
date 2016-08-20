@@ -38,8 +38,9 @@ module.exports = {
       });
     }, // a function which produces all the users
     post: function (user) {
+      user.hobby = user.hobby || '';
       return new Promise(function(resolve, reject) {
-        db.query('INSERT INTO users (name, hobby) VALUES ("' + user.username + '", "' + user.hobby + '")', function(err, result) {
+        db.query('INSERT INTO users (username, hobby) VALUES ("' + user.username + '", "' + user.hobby + '")', function(err, result) {
           if (err) {
             return reject(err);
           }

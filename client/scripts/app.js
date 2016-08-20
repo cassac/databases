@@ -23,6 +23,8 @@ var app = {
     app.$chats.on('click', '.username', app.toggleFriend);
     app.$send.on('submit', app.handleSubmit);
     app.$roomSelect.on('change', app.saveRoom);
+    app.$userSelect.on('change', app.saveUser);
+
 
     // Fetch previous messages
     app.startSpinner();
@@ -36,14 +38,13 @@ var app = {
     // Poll for new messages
     setInterval(function() {
       app.fetch(false, 'messages/', app.handleMessages);
-    }, 1000);
+    }, 2000);
   },
 
   send: function(data, urlEndPoint) {
     app.startSpinner();
     // Clear messages input
     app.$message.val('');
-
     // POST the message to the server
     $.ajax({
       url: app.server + urlEndPoint,
@@ -53,6 +54,7 @@ var app = {
       success: function (data) {
         // Trigger a fetch to update the messages, pass true to animate
         // app.fetch();
+        console.log('postData:', data);
       },
       error: function (data) {
         console.error('chatterbox: Failed to send message', data);
@@ -191,7 +193,6 @@ var app = {
   },
 
   addMessage: function(data) {
-    console.log(data);
     if (!data.roomname) {
       data.roomname = 'lobby';
     }
@@ -236,6 +237,10 @@ var app = {
   saveRoom: function(evt) {
 
     var selectIndex = app.$roomSelect.prop('selectedIndex');
+    // clear messages
+    app.clearMessages();
+    // Reset newest message id
+    app.lastMessageId = 0;
     // New room is always the first option
     if (selectIndex === 0) {
       var roomname = prompt('Enter room name');
@@ -250,15 +255,41 @@ var app = {
         app.$roomSelect.val(roomname);
 
         // Fetch messages again
-        app.fetch();
+        app.send({roomname: roomname}, 'rooms/');
+        app.fetch(false, 'messages/', app.handleMessages);
       }
     } else {
       app.startSpinner();
       // Store as undefined for empty names
       app.roomname = app.$roomSelect.val();
-
       // Fetch messages again
-      app.fetch();
+      app.fetch(false, 'messages/', app.handleMessages);
+    }
+  },
+
+  saveUser: function(evt) {
+
+    var selectIndex = app.$userSelect.prop('selectedIndex');
+    // New user is always the first option
+    if (selectIndex === 0) {
+      var username = prompt('Enter user name');
+      if (username) {
+        // Set as the current user
+        app.username = username;
+
+        // Add the user to the menu
+        app.addUser(username);
+
+        // Select the menu option
+        app.$userSelect.val(username);
+
+        // Fetch messages again
+        app.send({username: username}, 'users/');
+      }
+    } else {
+      app.startSpinner();
+      // Store as undefined for empty names
+      app.username = app.$userSelect.val();
     }
   },
 
@@ -269,19 +300,7 @@ var app = {
       roomname: app.roomname || 'lobby'
     };
 
-    app.send(data, 'messages' );
-
-    // var data = {
-    //   text: app.$message.val(),
-    //   room_id: app.roomname || 1,
-    //   user_id: app.userID || 1
-    // };
-    // // if new user post request
-    // var data = {
-    //   username: //
-    // };
-
-    // app.send(data, urlEndPoint);
+    app.send(message, 'messages/');
 
     // Stop the form from submitting
     evt.preventDefault();
