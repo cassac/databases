@@ -16,6 +16,7 @@ var app = {
     app.$message = $('#message');
     app.$chats = $('#chats');
     app.$roomSelect = $('#roomSelect');
+    app.$userSelect = $('#userSelect');
     app.$send = $('#send');
 
     // Add listeners
@@ -28,10 +29,10 @@ var app = {
     app.fetch(false, 'messages/', app.handleMessages);
 
     // Fetch rooms
-    // app.fetchRooms();
+    app.fetch(false, 'rooms/', app.handleRooms);
 
     // Fetch users
-    // app.fetchUsers
+    app.fetch(false, 'users/', app.handleUsers);
     // Poll for new messages
     setInterval(function() {
       app.fetch(false, 'messages/', app.handleMessages);
@@ -99,6 +100,13 @@ var app = {
     app.populateRooms(data.results);
   },
 
+  handleUsers: function(data) {
+    // Only bother updating the DOM if we have a new message
+    var displayedUser = $('.chat span').first().data('username');
+    // Update the UI with the fetched Users
+    app.populateUsers(data.results);
+  },
+
   clearMessages: function() {
     app.$chats.html('');
   },
@@ -125,7 +133,7 @@ var app = {
   },
 
   populateRooms: function(results) {
-    app.$roomSelect.html('<option value="__newRoom">New room...</option><option value="" selected>Lobby</option></select>');
+    app.$roomSelect.html('<option value="__newRoom" selected>New room...</option></select>');
 
     if (results) {
       var rooms = {};
@@ -143,6 +151,35 @@ var app = {
 
     // Select the menu option
     app.$roomSelect.val(app.roomname);
+  },
+
+  populateUsers: function(results) {
+    app.$userSelect.html('<option value="__newUser" selected>New user...</option></select>');
+
+    if (results) {
+      var users = {};
+      results.forEach(function(data) {
+        var username = data.username;
+        if (username && !users[username]) {
+          // Add the room to the select menu
+          app.addUser(username);
+
+          // Store that we've added this user already
+          users[username] = true;
+        }
+      });
+    }
+
+    // Select the menu option
+    app.$userSelect.val(app.username);
+  },
+
+  addUser: function(username) {
+    // Prevent XSS by escaping with DOM methods
+    var $option = $('<option/>').val(username).text(username);
+
+    // Add to select
+    app.$userSelect.append($option);
   },
 
   addRoom: function(roomname) {

@@ -5,8 +5,7 @@ module.exports = {
     get: function (req, res) {
       models.messages.get()
         .then(function(results) {
-          var obj = {results: results};
-          res.send(obj);
+          res.send({results: results});
         })
         .catch(function(error) {
           res.send(error);
@@ -28,7 +27,7 @@ module.exports = {
     get: function (req, res) {
       models.users.get()
         .then(function(results) {
-          res.send(results);
+          res.send({results: results});
         })
         .catch(function(error) {
           res.send(error);
@@ -50,7 +49,7 @@ module.exports = {
     get: function (req, res) {
       models.rooms.get()
         .then(function(results) {
-          res.send(results);
+          res.send({results: results});
         })
         .catch(function(error) {
           res.send(error);
