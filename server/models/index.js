@@ -5,7 +5,7 @@ module.exports = {
   messages: {
     get: function () {
       return new Promise(function(resolve, reject) {
-        db.query('SELECT * FROM users', function(err, rows) {
+        db.query('SELECT * FROM messages', function(err, rows) {
           if (err) {
             return reject(err);
           }
@@ -17,8 +17,16 @@ module.exports = {
   },
 
   users: {
-    // Ditto as above.
-    get: function () {},
+    get: function () {
+      return new Promise(function(resolve, reject) {
+        db.query('SELECT * FROM users', function(err, rows) {
+          if (err) {
+            return reject(err);
+          }
+          return resolve(rows);
+        });
+      });
+    }, // a function which produces all the users
     post: function () {}
   }
 };

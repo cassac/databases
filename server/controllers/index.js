@@ -12,8 +12,12 @@ module.exports = {
   },
 
   users: {
-    // Ditto as above
-    get: function (req, res) {},
+    get: function (req, res) {
+      models.users.get()
+        .then(function(results) {
+          res.send(results);
+        });
+    }, 
     post: function (req, res) {}
   }
 };
