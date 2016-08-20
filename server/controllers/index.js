@@ -5,7 +5,8 @@ module.exports = {
     get: function (req, res) {
       models.messages.get()
         .then(function(results) {
-          res.send(results);
+          var obj = {results: results};
+          res.send(obj);
         })
         .catch(function(error) {
           res.send(error);
@@ -43,6 +44,28 @@ module.exports = {
         res.status(500).send(error);
       });
     }
-  }
+  },
+
+  rooms: {
+    get: function (req, res) {
+      models.rooms.get()
+        .then(function(results) {
+          res.send(results);
+        })
+        .catch(function(error) {
+          res.send(error);
+        });
+    }, 
+    post: function (req, res) {
+      models.rooms.post(req.body)
+      .then(function(results) {
+        console.log('results', results);
+        res.status(201).send('Resource created.');
+      })
+      .catch(function(error) {
+        res.status(500).send(error);
+      });
+    }
+  },  
 };
 

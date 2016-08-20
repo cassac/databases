@@ -2,7 +2,7 @@ var app = {
 
   //TODO: The current 'toggleFriend' function just toggles the class 'friend'
   //to all messages sent by the user
-  server: 'http://127.0.0.1:3000/classes/messages/',
+  server: 'http://127.0.0.1:3000/classes/',
   username: 'anonymous',
   roomname: 'lobby',
   lastMessageId: 0,
@@ -28,17 +28,17 @@ var app = {
     app.fetch(false);
 
     // Poll for new messages
-    setInterval(app.fetch, 3000);
+    setInterval(app.fetch, 1000);
   },
 
-  send: function(data) {
+  send: function(data, urlEndPoint) {
     app.startSpinner();
     // Clear messages input
     app.$message.val('');
 
     // POST the message to the server
     $.ajax({
-      url: app.server,
+      url: app.server + urlEndPoint,
       type: 'POST',
       data: JSON.stringify(data),
       contentType: 'application/json',
@@ -54,12 +54,11 @@ var app = {
 
   fetch: function(animate) {
     $.ajax({
-      url: app.server,
+      url: app.server + 'messages/',
       type: 'GET',
       contentType: 'application/json',
       // data: { order: '-createdAt'},
       success: function(data) {
-        console.log('data:', data)
         // Don't bother if we have nothing to work with
         if (!data.results || !data.results.length) { return; }
 
@@ -76,7 +75,7 @@ var app = {
           app.populateMessages(data.results, animate);
 
           // Store the ID of the most recent message
-          app.lastMessageId = mostRecentMessage.objectId;
+          app.lastMessageId = mostRecentMessage.id;
         }
       },
       error: function(data) {
@@ -217,7 +216,19 @@ var app = {
       roomname: app.roomname || 'lobby'
     };
 
-    app.send(message);
+    app.send(data, 'messages' );
+
+    // var data = {
+    //   text: app.$message.val(),
+    //   room_id: app.roomname || 1,
+    //   user_id: app.userID || 1
+    // };
+    // // if new user post request
+    // var data = {
+    //   username: //
+    // };
+
+    // app.send(data, urlEndPoint);
 
     // Stop the form from submitting
     evt.preventDefault();

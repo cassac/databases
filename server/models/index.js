@@ -46,5 +46,28 @@ module.exports = {
         });
       });
     }
+  },
+
+  rooms: {
+    get: function () {
+      return new Promise(function(resolve, reject) {
+        db.query('SELECT * FROM rooms', function(err, rows) {
+          if (err) {
+            return reject(err);
+          }
+          return resolve(rows);
+        });
+      });
+    }, // a function which produces all the users
+    post: function (room) {
+      return new Promise(function(resolve, reject) {
+        db.query('INSERT INTO rooms (roomname, description) VALUES ("' + room.roomname + '", "' + room.description + '")', function(err, result) {
+          if (err) {
+            return reject(err);
+          }
+          return resolve(result);
+        });
+      });
+    }
   }
 };
