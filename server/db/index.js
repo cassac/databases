@@ -4,7 +4,8 @@ var con = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'root',
-  database: 'chat'
+  database: 'chat',
+  stringifyObjects: true
 });
 
 
