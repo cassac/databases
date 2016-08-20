@@ -1,3 +1,5 @@
+-- DROP DATABASE chat;
+
 CREATE DATABASE chat;
 
 USE chat;
@@ -18,7 +20,7 @@ DROP TABLE IF EXISTS `rooms`;
     
 CREATE TABLE `rooms` (
   `id` INTEGER(3) NOT NULL AUTO_INCREMENT,
-  `name` CHAR(30) NOT NULL,
+  `roomname` CHAR(30) NOT NULL,
   `description` CHAR(150) NOT NULL,
   PRIMARY KEY (`id`)
 ) COMMENT 'only organic';
@@ -32,7 +34,7 @@ DROP TABLE IF EXISTS `users`;
     
 CREATE TABLE `users` (
   `id` INTEGER(3) NOT NULL AUTO_INCREMENT,
-  `name` CHAR(30) NOT NULL,
+  `username` CHAR(30) NOT NULL,
   `hobby` CHAR(30) NULL,
   PRIMARY KEY (`id`)
 );
@@ -87,9 +89,9 @@ ALTER TABLE `followers` ADD FOREIGN KEY (follower_id) REFERENCES `users` (`id`);
 -- Test Data
 -- ---
 
--- INSERT INTO `rooms` (`id`,`name`,`description`) VALUES
+-- INSERT INTO `rooms` (`id`,`roomname`,`description`) VALUES
 -- ('','','');
--- INSERT INTO `users` (`id`,`name`,`hobby`) VALUES
+-- INSERT INTO `users` (`id`,`username`,`hobby`) VALUES
 -- ('','','');
 -- INSERT INTO `messages` (`id`,`text`,`created`,`room_id`,`user_id`) VALUES
 -- ('','','','','');
