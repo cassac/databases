@@ -23,7 +23,13 @@ module.exports = {
           res.send(results);
         });
     }, 
-    post: function (req, res) {}
+    post: function (req, res) {
+      models.users.post(req.body)
+      .then(function(results) {
+        console.log('results', results);
+      });
+      res.send('ok');
+    }
   }
 };
 
